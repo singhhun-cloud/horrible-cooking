@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Terrible Chef</title>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Bitter:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--wall:#9fb27d;--grout:#85996a;--steel:#e3e8e2;--ink:#262716;--red:#b3261e;--mus:#e2b92f;--mute:#5a5f4b;--lock:#c5ccbd;--ok:#2f6b2f;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--wall:#2f3a27;--grout:#262f20;--steel:#3b4237;--ink:#eef0e4;--red:#ff6b5e;--mus:#e8c64a;--mute:#b4baa5;--lock:#2c3228;--ok:#8fd68f}}
+:root[data-theme="dark"]{--wall:#2f3a27;--grout:#262f20;--steel:#3b4237;--ink:#eef0e4;--red:#ff6b5e;--mus:#e8c64a;--mute:#b4baa5;--lock:#2c3228;--ok:#8fd68f}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;font:16px/1.45 Bitter,Georgia,serif;color:var(--ink);background-color:var(--wall);
+background-image:linear-gradient(var(--grout) 3px,transparent 3px),linear-gradient(90deg,var(--grout) 3px,transparent 3px);background-size:64px 64px}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:18px 20px 6px;max-width:1100px;margin:0 auto}
+h1{font:400 clamp(30px,6vw,52px)/1 "Bowlby One",Impact,sans-serif;margin:0;color:var(--red);text-shadow:3px 3px 0 var(--mus);transform:rotate(-1.5deg)}
+h2{font:400 20px/1.1 "Bowlby One",Impact,sans-serif;margin:0 0 12px}
+#till{display:flex;gap:8px;flex-wrap:wrap}
+#till span{background:var(--steel);border:3px solid var(--ink);padding:4px 12px;border-radius:4px;font-weight:700}
+#till b{font-family:"Bowlby One",Impact,sans-serif;font-weight:400;color:var(--ok)}
+main{display:grid;gap:16px;padding:12px 20px 20px;max-width:1100px;margin:0 auto;grid-template-columns:1fr}
+@media(min-width:860px){main{grid-template-columns:1fr 1fr}#panw{grid-column:1/-1}}
+.p{background:var(--steel);border:3px solid var(--ink);border-radius:4px;padding:16px;box-shadow:6px 6px 0 var(--ink)}
+button{font:700 15px Bitter,Georgia,serif;color:var(--ink);cursor:pointer}
+button:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.btn{background:var(--mus);border:3px solid var(--ink);border-radius:99px;padding:9px 18px}
+.btn:hover:not(:disabled){background:var(--red);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.alt{background:transparent}
+#pot{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.slot{width:62px;height:62px;border:3px dashed var(--ink);border-radius:50% 50% 12px 12px;background:transparent;font-size:32px;padding:0}
+.slot.f{border-style:solid;background:var(--lock)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.hint{color:var(--mute);margin:8px 0 0;font-size:14px}
+#pan{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
+.t{border:3px solid var(--ink);border-radius:4px;padding:6px 4px;text-align:center;background:var(--steel);min-height:84px;line-height:1.2}
+.t .e{font-size:28px;display:block}.t small{display:block;font-size:12px}.t .a{color:var(--red);font-weight:700}
+button.t:hover{background:var(--mus)}
+.t.l{background:var(--lock);border-style:dashed;color:var(--mute);cursor:default;display:flex;align-items:center;justify-content:center;font-size:26px}
+.shop{display:flex;gap:10px;align-items:center;border-bottom:2px dotted var(--mute);padding:8px 0}
+.shop .e{font-size:34px}.shop div{flex:1;min-width:0}
+.big{font:400 24px/1.15 "Bowlby One",Impact,sans-serif;margin:0 0 6px}
+.res{border:3px solid var(--ink);padding:12px;border-radius:4px;background:var(--lock)}
+.pay{font:400 34px "Bowlby One",Impact,sans-serif;color:var(--ok)}
+.rev{font-style:italic;margin:6px 0}
+.ev{animation:shake .4s 1}
+@keyframes shake{25%{transform:translateX(-5px) rotate(-1deg)}75%{transform:translateX(5px) rotate(1deg)}}
+@media(prefers-reduced-motion:reduce){.ev{animation:none}}
+footer{text-align:center;padding:0 20px 28px}
+footer button{background:none;border:0;text-decoration:underline;color:var(--ink);font-weight:400}
+</style>
+</head>
+<body>
+<header><h1>Terrible Chef</h1><div id="till"></div></header>
+<main>
+<section class="p"><h2>The Stove</h2><div id="pot"></div><div id="stage"></div></section>
+<section class="p"><h2>Back Alley Market</h2><div id="shop"></div></section>
+<section class="p" id="panw"><h2>Pantry of Shame <span id="cnt"></span></h2><div id="pan"></div></section>
+</main>
+<footer><button id="rs">Burn the kitchen down (reset)</button></footer>
+<script>
+const $=s=>document.querySelector(s);
+const R="🥔|Sprouting Potato;🍞|Stale Bread;🥛|Warm Milk;🥬|Wilted Lettuce;🧅|Whole Raw Onion;🥚|Cracked Egg;🍌|Black Banana;🧀|Sweaty Cheese;🍅|Mushy Tomato;🥫|Unlabeled Can;🍖|Gray Ham;🐟|Day 9 Sardines;🥦|4-Hour Broccoli;🧈|Car Butter;🍄|Mystery Mushroom;🌶️|Unmarked Pepper;🍋|Fuzzy Lemon;🫙|Pickle Sludge;🍗|Rarer Chicken;🧦|Gym Sock Broth;🪱|Garden Worms;🦴|Old Fish Bones;🍬|Pocket Gum;🧽|Sponge Steak;🧔|Beard Clippings;🕸️|Cobweb Floss;🐌|Slug Garnish;🦷|Loose Dentures;🩴|Flip-Flop Jerky;🧻|Wet Paper Towel;🕯️|Candle Wax Butter;🪳|Crunchy Bug Bits;🧪|Expired Protein Powder;🛢️|Year-3 Fryer Oil;🧲|Fridge Magnet Croutons;🦠|Sentient Sourdough;🧟|Zombie Leftovers;👢|Boot Stew;🗑️|Bin Juice;🌪️|Dryer Lint Soufflé;🐙|Angry Octopus;🦨|Skunk Spice;🔥|Charcoal Brûlée;🪨|Gravel Crumble;👻|Ghost of a Pepper;🌑|Bottled Darkness;🕳️|Concentrated Void;☄️|Meteorite Nuggets;👁️|Freezer Eye;🐲|Dragon's Regret;💀|The Worst Thing".split(";").map((s,i)=>{const[e,n]=s.split("|");return{e,n,a:Math.round(2+i*1.6),c:i<3?0:Math.round(6*Math.pow(1.12,i))}});
+const EV=[["🔥 The pan is on fire!",[["Splash it with water",10],["Fan it with a pizza box",35],["Pour in more oil",70]]],
+["🦝 A raccoon climbs through the window.",[["Shoo it out",10],["Hire it as sous-chef",40],["Let it season the dish",75]]],
+["⚡ Power cut. Everything goes dark.",[["Wait patiently",5],["Cook by candlelight",30],["Cook by the light of the fire you just started",65]]],
+["🪰 A fly lands in the pot.",[["Flick it out",10],["Stir it in",40],["Name it Gerald and serve it as a guest",60]]],
+["🌀 The oven timer breaks.",[["Guess 40 minutes",15],["Ask the toaster",35],["Bake it until the heat death of the universe",80]]],
+["🕵️ The health inspector is at the door!",[["Hide the dish under a hat",25],["Offer her a free sample",55],["Serve her the sample you dropped",85]]],
+["📞 Your mum calls mid-stir.",[["Ignore it",5],["Stir with the phone",45],["Put her on speaker and add the speaker",70]]],
+["🧊 The freezer door swings open.",[["Close it",5],["Take a cube of something unlabeled",40],["Thaw it with your breath",65]]],
+["🧂 The salt and sugar swap labels.",[["Taste first",5],["Use both, equally",35],["Use both, aggressively",60]]],
+["🪠 The sink starts to gurgle.",[["Ignore it",10],["Use the sink water for stock",50],["Ask it what it wants",70]]]];
+const REV=[[0,"4 stars. “Fine. Suspiciously fine.”"],[15,"3 stars. “Cold in the middle, warm in the wrong place.”"],[50,"2 stars. “My table left. Quietly.”"],[150,"1 star. “The soup looked back at me.”"],[500,"0 stars. “I had to lie down in the car park.”"],[1500,"-1 stars. “The inspector wept and called a priest.”"],[5000,"-5 stars. “Three nearby suburbs have been evacuated.”"]];
+const PRE=["Damp","Screaming","Regretful","Sad","Gloomy","Haunted","Gently Smoking","Forbidden","Lukewarm"],SUF=["Surprise","Casserole","Smoothie","Bake","Medley","Mush","Pie","Bowl"];
+const UP=[40,250,1000,3500],MAX=R.length;
+let S={cash:0,owned:3,slots:2,cooked:0};
+try{const d=JSON.parse(localStorage.getItem("tc1"));if(d&&d.owned)S=Object.assign(S,{cash:d.cash,owned:d.owned,slots:d.slots,cooked:d.cooked})}catch(e){}
+let pot=[],ph="prep",q=[],ev=null,bonus=0,res=null;
+const save=()=>{try{localStorage.setItem("tc1",JSON.stringify(S))}catch(e){}};
+const $$=n=>"$"+n.toLocaleString();
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+function add(i){if(ph==="prep"&&pot.length<S.slots){pot.push(i);render()}}
+function rem(k){if(ph==="prep"){pot.splice(k,1);render()}}
+function auto(){pot=[];for(let k=0;k<S.slots;k++)pot.push(S.owned-1-(k%S.owned));render()}
+function cook(){if(!pot.length)return;bonus=0;q=shuf(EV).slice(0,S.slots>=4&&Math.random()<.5?2:1);next()}
+function next(){if(q.length){const e=q.shift();ev={t:e[0],c:shuf(e[1])};ph="event";render()}else finish()}
+function choose(b){bonus+=b;next()}
+function finish(){
+ const seen={};let base=0;pot.forEach(i=>{base+=R[i].a*(seen[i]?.5:1);seen[i]=1});
+ const d=Object.keys(seen).length,vm=1+.2*(d-1),pay=Math.round(base*vm*(1+bonus/100));
+ const names=Object.keys(seen).map(i=>R[i].n.split(" ").pop());
+ let rv=REV[0][1];REV.forEach(r=>{if(pay>=r[0])rv=r[1]});
+ res={name:pick(PRE)+" "+names.join(" & ")+" "+pick(SUF),pay,base:Math.round(base),vm,bonus,rv};
+ S.cash+=pay;S.cooked++;pot=[];ph="result";save();render();
+}
+function again(){res=null;ph="prep";render()}
+function buy(i){const it=R[i];if(i===S.owned&&S.cash>=it.c){S.cash-=it.c;S.owned++;save();render()}}
+function upg(){const c=UP[S.slots-2];if(S.slots<6&&S.cash>=c){S.cash-=c;S.slots++;save();render()}}
+function el(t,c,h){const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e}
+
+function render(){
+ $("#till").innerHTML=`<span>Cash <b>${$$(S.cash)}</b></span><span>Dishes ${S.cooked}</span>`;
+ $("#cnt").textContent=`(${S.owned}/${MAX})`;
+ const P=$("#pot");P.innerHTML="";
+ for(let k=0;k<S.slots;k++){const b=el("button","slot"+(pot[k]!=null?" f":""),pot[k]!=null?R[pot[k]].e:"+");
+  b.setAttribute("aria-label",pot[k]!=null?"Remove "+R[pot[k]].n:"Empty pot slot");b.onclick=()=>rem(k);P.appendChild(b)}
+ const G=$("#stage");G.innerHTML="";
+ if(ph==="prep"){
+  G.appendChild(el("p","hint","Pick up to "+S.slots+" ingredients from the pantry. The worse it is, the more they pay."));
+  const r=el("div","row");
+  const c=el("button","btn","Cook it");c.disabled=!pot.length;c.onclick=cook;
+  const a=el("button","btn alt","Auto-fill with the worst");a.onclick=auto;
+  r.append(c,a);G.appendChild(r);
+  if(S.owned>=MAX)G.appendChild(el("p","big","You own all 50. You are the worst chef alive."));
+ }else if(ph==="event"){
+  const d=el("div","ev");d.appendChild(el("p","big",ev.t));
+  d.appendChild(el("p","hint","Whatever you do, do not make it better."));
+  const r=el("div","row");
+  ev.c.forEach(c=>{const b=el("button","btn",c[0]);b.onclick=()=>choose(c[1]);r.appendChild(b)});
+  d.appendChild(r);G.appendChild(d);
+ }else{
+  const d=el("div","res");
+  d.append(el("p","big",res.name),el("div","pay","+"+$$(res.pay)),el("p","rev",res.rv),
+   el("p","hint",`Awfulness ${res.base} × variety ${res.vm.toFixed(1)} × disaster ${(1+res.bonus/100).toFixed(2)}`));
+  const b=el("button","btn","Next order");b.onclick=again;d.appendChild(b);G.appendChild(d);
+ }
+ const M=$("#shop");M.innerHTML="";
+ for(let i=S.owned;i<Math.min(S.owned+3,MAX);i++){
+  const it=R[i],d=el("div","shop",`<span class="e">${it.e}</span><div><b>${it.n}</b><br><span class="a" style="color:var(--red)">Awfulness +${it.a}</span></div>`);
+  const b=el("button","btn",i===S.owned?"Buy "+$$(it.c):"Locked");b.disabled=i!==S.owned||S.cash<it.c;b.onclick=()=>buy(i);d.appendChild(b);M.appendChild(d);
+ }
+ if(S.owned>=MAX)M.appendChild(el("p","hint","Sold out. The market has nothing worse to sell you."));
+ if(S.slots<6){const c=UP[S.slots-2],d=el("div","shop",`<span class="e">🍲</span><div><b>Bigger pot</b><br>Holds ${S.slots+1} ingredients</div>`);
+  const b=el("button","btn",$$(c));b.disabled=S.cash<c;b.onclick=upg;d.appendChild(b);M.appendChild(d)}
+ const N=$("#pan");N.innerHTML="";
+ R.forEach((it,i)=>{
+  if(i<S.owned){const b=el("button","t",`<span class="e">${it.e}</span><small>${it.n}</small><small class="a">+${it.a}</small>`);b.onclick=()=>add(i);N.appendChild(b)}
+  else{const d=el("div","t l","?");d.title="Locked";d.setAttribute("aria-label","Locked ingredient "+(i+1));N.appendChild(d)}
+ });
+}
+$("#rs").onclick=()=>{if(confirm("Reset all progress?")){S={cash:0,owned:3,slots:2,cooked:0};pot=[];ph="prep";res=null;save();render()}};
+render();
+</script>
+</body>
+</html>
